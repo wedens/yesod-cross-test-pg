@@ -1,0 +1,26 @@
+diff --git a/Setup.hs b/Setup.hs
+index 5623a38..699719e 100755
+--- a/Setup.hs
++++ b/Setup.hs
+@@ -57,18 +57,8 @@ main = defaultMainWithHooks simpleUserHooks {
+ }
+ 
+ psqlBuildInfo :: LocalBuildInfo -> IO BuildInfo
+-psqlBuildInfo lbi = do
+-  (pgconfigProg, _) <- requireProgram verbosity
+-                         (simpleProgram "pg_config") (withPrograms lbi)
+-  let pgconfig = getProgramOutput verbosity pgconfigProg
+-
+-  incDir <- pgconfig ["--includedir"]
+-  libDir <- pgconfig ["--libdir"]
+-
++psqlBuildInfo _ =
+   return emptyBuildInfo {
+-    extraLibDirs = [strip libDir],
+-    includeDirs  = [strip incDir]
++    extraLibDirs = [ "@libpq@/lib" ],
++    includeDirs  = [ "@libpq@/include" ]
+   }
+-  where
+-    verbosity = normal -- honestly, this is a hack
+-    strip x = dropWhile isSpace $ reverse $ dropWhile isSpace $ reverse x
